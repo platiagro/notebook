@@ -51,7 +51,7 @@ define([
             ],
             'move_up_down'],
           [ [new toolbar.Button('jupyter-notebook:run-cell-and-select-next',
-                {label: i18n.msg._('Run')}),
+                {label: i18n.msg._('Run teste!')}),
              'jupyter-notebook:interrupt-kernel',
              'jupyter-notebook:confirm-restart-kernel',
              'jupyter-notebook:confirm-restart-kernel-and-run-all-cells'
