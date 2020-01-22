@@ -51,7 +51,7 @@ define([
             ],
             'move_up_down'],
           [ [new toolbar.Button('jupyter-notebook:run-cell-and-select-next',
-                {label: i18n.msg._('Run teste!')}),
+                {label: i18n.msg._('Run')}),
              'jupyter-notebook:interrupt-kernel',
              'jupyter-notebook:confirm-restart-kernel',
              'jupyter-notebook:confirm-restart-kernel-and-run-all-cells'
@@ -60,7 +60,10 @@ define([
          ['<add_celltype_list>'],
          [
            ['jupyter-notebook:show-command-palette'],
-           'cmd_palette']
+           'cmd_palette'],
+        [
+            ['jupyter-notebook:show-code-palette'],
+            'cmd_code']
         ];
         this.construct(grps);
     };
