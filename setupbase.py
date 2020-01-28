@@ -211,6 +211,7 @@ def find_package_data():
         'notebook.tests' : js_tests,
         'notebook.bundler.tests': ['resources/*', 'resources/*/*', 'resources/*/*/.*'],
         'notebook.services.api': ['api.yaml'],
+        'notebook.services.notebook_templates': ['implantation.json', 'training.json'],
         'notebook.i18n': ['*/LC_MESSAGES/*.*'],
     }
     
