@@ -60,7 +60,10 @@ define([
          ['<add_celltype_list>'],
          [
            ['jupyter-notebook:show-command-palette'],
-           'cmd_palette']
+           'cmd_palette'],
+        [
+            ['jupyter-notebook:show-code-palette'],
+            'cmd_code']
         ];
         this.construct(grps);
     };

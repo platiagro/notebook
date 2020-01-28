@@ -563,6 +563,14 @@ define([
                 env.notebook.show_command_palette();
             }
         },
+        'show-code-palette': {
+            cmd: i18n.msg._('show code pallette'),
+            help: i18n.msg._('open the code palette'),
+            icon: 'fas fa-bug',
+            handler : function(env){
+                env.notebook.show_code_palette();
+            }
+        },
         'toggle-all-line-numbers': {
             cmd: i18n.msg._('toggle all line numbers'),
             help : i18n.msg._('toggles line numbers in all cells, and persist the setting'),

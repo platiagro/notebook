@@ -358,7 +358,7 @@ class ContentsManager(LoggingConfigurable):
             )
         return model
     
-    def new_untitled(self, path='', type='', ext=''):
+    def new_untitled(self, path='', type='', ext='', template=''):
         """Create a new untitled file or directory in path
         
         path must be a directory
@@ -394,9 +394,9 @@ class ContentsManager(LoggingConfigurable):
         
         name = self.increment_filename(untitled + ext, path, insert=insert)
         path = u'{0}/{1}'.format(path, name)
-        return self.new(model, path)
+        return self.new(model, path, template)
     
-    def new(self, model=None, path=''):
+    def new(self, model=None, path='', template=''):
         """Create a new file or directory and return its model with no content.
         
         To create a new untitled entity in a directory, use `new_untitled`.
@@ -413,7 +413,16 @@ class ContentsManager(LoggingConfigurable):
         # no content, not a directory, so fill out new-file model
         if 'content' not in model and model['type'] != 'directory':
             if model['type'] == 'notebook':
-                model['content'] = new_notebook()
+                nb = new_notebook()
+                if template is not '':
+                    dir_path = os.path.dirname(os.path.realpath(__file__))
+                    os.chdir(dir_path)
+                    template_path = "../notebook_templates/" + template + ".json"
+                    with open(template_path, "r") as read_file:
+                        json_string = json.load(read_file)
+                    nb['cells'] = json_string
+
+                model['content'] = nb
                 model['format'] = 'json'
             else:
                 model['content'] = ''
