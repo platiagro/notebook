@@ -416,7 +416,6 @@ class ContentsManager(LoggingConfigurable):
                 nb = new_notebook()
                 if template is not '':
                     dir_path = os.path.dirname(os.path.realpath(__file__))
-                    self.log.info(u"dir_path %s", dir_path)  
                     os.chdir(dir_path)
                     template_path = "../notebook_templates/" + template + ".json"
                     with open(template_path, "r") as read_file:
