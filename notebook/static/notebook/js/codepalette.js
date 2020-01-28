@@ -17,20 +17,20 @@ define([
         // typeahead lib need a specific layout with specific class names.
         // the following just does that
         var form = $('<form/>');
-        var container = $('<div/>').addClass('typeahead-container');
-        var field = $('<div/>').addClass('typeahead-field');
+        var container = $('<div/>').addClass('typeahead__container');
+        var field = $('<div/>').addClass('typeahead__field');
         var input = $('<input/>').attr('type', 'search');
 
         field
           .append(
-            $('<span>').addClass('typeahead-query').append(
+            $('<span>').addClass('typeahead__query').append(
               input
             )
           )
           .append(
-            $('<span/>').addClass('typeahead-button').append(
+            $('<span/>').addClass('typeahead__button').append(
               $('<button/>').attr('type', 'submit').append(
-                $('<span/>').addClass('typeahead-search-icon')
+                $('<span/>').addClass('typeahead__search-icon')
               )
             )
           );
@@ -139,7 +139,9 @@ define([
           maxItem: 1e3,
           minLength: 0,
           hint: true,
-          group: ["group", "{{group}} group"],
+          group: {
+            template:"{{group}} group"
+          },
           searchOnFocus: true,
           mustSelectItem: true,
           template: '<i class="fa fa-icon {{icon}}"></i>{{display}}  <div title={{key}} class="pull-right"></div>',

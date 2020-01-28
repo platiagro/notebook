@@ -470,6 +470,10 @@ define([
         new commandpalette.CommandPalette(this);
     };
 
+    Notebook.prototype.show_code_palette = function() {
+        new codepalette.CodePalette(this);
+    };
+
     Notebook.prototype.show_shortcuts_editor = function() {
         new ShortcutEditor(this);
     };
@@ -3508,13 +3512,6 @@ define([
     Notebook.prototype.delete_checkpoint_success = function () {
         this.events.trigger('checkpoint_deleted.Notebook');
         this.load_notebook(this.notebook_path);
-    };
-
-    /**
-     * Show code palette.
-     */
-    Notebook.prototype.show_code_palette = function() {
-        new codepalette.CodePalette(this);
     };
 
     /**
