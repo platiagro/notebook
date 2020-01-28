@@ -20,6 +20,7 @@ define([
         if (this.selector !== undefined) {
             this.element = $(selector);
             this.request_kernelspecs();
+            this.load_notebook_templates();
         }
         this.bind_events();
     };
@@ -66,7 +67,7 @@ define([
                         .attr("aria-label", ks.name)
                         .attr("role", "menuitem")
                         .attr('href', '#')
-                        .click($.proxy(this.new_notebook, this, ks.name))
+                        .click($.proxy(this.new_notebook, this, ks.name, undefined))
                         .text(ks.spec.display_name)
                         .attr('title', i18n.sprintf(i18n._('Create a new notebook with %s'), ks.spec.display_name))
                 );
@@ -75,13 +76,13 @@ define([
         this.events.trigger('kernelspecs_loaded.KernelSpec', data.kernelspecs);
     };
     
-    NewNotebookWidget.prototype.new_notebook = function (kernel_name, evt) {
+    NewNotebookWidget.prototype.new_notebook = function (kernel_name, template_name, evt) {
         /** create and open a new notebook */
         var that = this;
         kernel_name = kernel_name || this.default_kernel;
         var w = window.open(undefined, IPython._target);
         var dir_path = $('body').attr('data-notebook-path');
-        this.contents.new_untitled(dir_path, {type: "notebook"}).then(
+        this.contents.new_untitled(dir_path, {type: "notebook", template: template_name}).then(
             function (data) {
                 var url = utils.url_path_join(
                     that.base_url, 'notebooks',
@@ -111,6 +112,36 @@ define([
         });
         if (evt !== undefined) {
             evt.preventDefault();
+        }
+    };
+
+    NewNotebookWidget.prototype.load_notebook_templates = function () {
+        var templates = {
+            implantation: {
+                name: 'implantation',
+                display_name: 'Implantation'
+            },
+            training: {
+                name: 'training',
+                display_name: 'Training'
+            }
+        }
+        var menu = this.element.find("#notebook-templates");
+        var keys = Object.keys(templates);
+        for (var i = keys.length - 1; i >= 0; i--) {
+            var template = templates[keys[i]];
+            var li = $("<li>")
+                .attr("id", "kernel-" + template.name)
+                .data('template', template).append(
+                    $('<a>')
+                        .attr("aria-label", template.name)
+                        .attr("role", "menuitem")
+                        .attr('href', '#')
+                        .click($.proxy(this.new_notebook, this, undefined, template.name))
+                        .text(template.display_name)
+                        .attr('title', i18n.sprintf(i18n._('Create a new notebook with %s template'), template.display_name))
+                );
+            menu.after(li);
         }
     };
     
