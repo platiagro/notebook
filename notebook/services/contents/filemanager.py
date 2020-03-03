@@ -446,7 +446,6 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
         else:
             self.log.debug("Directory %r already exists", os_path)
     
-    """TODO"""
     def save(self, model, path=''):
         """Save the file model and return the model with no content."""
         
