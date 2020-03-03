@@ -35,9 +35,9 @@ from notebook.base.handlers import AuthenticatedFileHandler
 from notebook.transutils import _
 
 from os.path import samefile
+from minio import Minio
 
 _script_exporter = None
-
 
 def _post_save_script(model, os_path, contents_manager, **kwargs):
     """convert notebooks to Python script after save with nbconvert
@@ -445,9 +445,11 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
             raise web.HTTPError(400, u'Not a directory: %s' % (os_path))
         else:
             self.log.debug("Directory %r already exists", os_path)
-
+    
+    """TODO"""
     def save(self, model, path=''):
         """Save the file model and return the model with no content."""
+        
         path = path.strip('/')
 
         if 'type' not in model:
@@ -491,6 +493,18 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
             model['message'] = validation_message
 
         self.run_post_save_hook(model=model, os_path=os_path)
+
+        # Save the file on Minio if the file is a PlatIA component 
+        if path.startswith("components"):
+            minioHost = os.getenv('MINIO_HOST', 'minio-service:9000')
+            minioAccessKey = os.getenv('MINIO_ACCESS_KEY', 'minio')
+            minioSecretKey = os.getenv('MINIO_SECRET_KEY', 'minio123')
+            minioBucket = os.getenv('MINIO_BUCKET', 'mlpipeline')
+            minioClient = Minio(minioHost, access_key=minioAccessKey, secret_key=minioSecretKey, secure=False)
+            try:
+                minioClient.fput_object(minioBucket, path, os_path)
+            except Exception as e:
+                self.log.error(u'Error while saving file on Minio: %s', e)
 
         return model
 
