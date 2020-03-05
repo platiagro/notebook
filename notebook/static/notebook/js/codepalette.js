@@ -82,14 +82,17 @@ define([
         // will be trigger when user select action
         var onSubmit = function(node, query, result, resultCount) {
           switch(result.key) {
-            case 'minio_read_csv_txt':
-              notebook.minio_read_csv_txt();
+            case 'load_dataset':
+              notebook.load_dataset();
               break;
-            case 'minio_save_model':
-              notebook.minio_save_model();
+            case 'save_dataset':
+              notebook.save_dataset();
               break;
-            case 'minio_upload_csv_txt':
-              notebook.minio_upload_csv_txt();
+            case 'load_model':
+              notebook.load_model();
+              break;
+            case 'save_model':
+              notebook.save_model();
               break;
             default:
               console.warn("No command " + result.key);
@@ -114,17 +117,21 @@ define([
           'Minio' :  {
             data: [
               {
-                display: 'Read CSV and TXT',
-                key: 'minio_read_csv_txt'
+                display: 'Load dataset',
+                key: 'load_dataset'
               },
               {
-                display: 'Upload CSV and TXT ',
-                key: 'minio_upload_csv_txt'
+                display: 'Save dataset',
+                key: 'save_dataset'
+              },
+              {
+                display: 'Load model',
+                key: 'load_model'
               },
               {
                 display: 'Save model',
-                key: 'minio_save_model'
-              }
+                key: 'save_model'
+              },
             ]
           }
         };

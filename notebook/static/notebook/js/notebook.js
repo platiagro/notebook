@@ -3515,88 +3515,65 @@ define([
     };
 
     /**
-     * Create cell with minio read csv and txt code.
+     * Create cell with load dataset code.
      */
-    Notebook.prototype.minio_read_csv_txt = function () {
+    Notebook.prototype.load_dataset = function () {
         var code = [];
-        code.push('import boto3');
-        code.push('from botocore.client import Config');
-        code.push('s3 = boto3.resource(\'s3\',');
-        code.push('                    endpoint_url=\'http://minio-service.kubeflow:9000\',');
-        code.push('                    aws_access_key_id=\'minio\',');
-        code.push('                    aws_secret_access_key=\'minio123\',');
-        code.push('                    config=Config(signature_version=\'s3v4\'),');
-        code.push('                    region_name=\'us-east-1\')');
+        code.push('from platiagro import load_dataset');
         code.push('');
-        code.push('key = os.path.join(experiment_id, in_csv)');
-        code.push('obj = s3.Object(bucket, key)');
-        code.push('data_file = obj.get()[\'Body\'].read()');
-        code.push('with open(in_csv, \'w\') as f:');
-        code.push('    f.write(data_file.decode(\'utf-8\'))');
-        code.push('');
-        code.push('key = os.path.join(experiment_id, in_txt)');
-        code.push('obj = s3.Object(bucket, key)');
-        code.push('feat_type_file = obj.get()[\'Body\'].read()');
-        code.push('');
-        code.push('with open(in_txt, \'w\') as f:');
-        code.push('    f.write(feat_type_file.decode(\'utf-8\'))');
+        code.push('df = load_dataset(name=dataset)');
 
         var new_cell_code = this.insert_cell_below('code');
         new_cell_code.set_text(code.join('\n'))
         var new_cell_markdown = this.insert_cell_below('markdown');
-        new_cell_markdown.set_text('Read CSV and TXT')
+        new_cell_markdown.set_text('Load dataset')
     };
 
     /**
-     * Create cell with minio save model code.
+     * Create cell with save dataset code.
      */
-    Notebook.prototype.minio_save_model = function () {
+    Notebook.prototype.save_dataset = function () {
         var code = [];
-        code.push('import boto3');
-        code.push('from botocore.client import Config');
-        code.push('s3 = boto3.client(\'s3\',');
-        code.push('                  endpoint_url=\'http://minio-service.kubeflow:9000\',');
-        code.push('                  aws_access_key_id=\'minio\',');
-        code.push('                  aws_secret_access_key=\'minio123\',');
-        code.push('                  config=Config(signature_version=\'s3v4\'),');
-        code.push('                  region_name=\'us-east-1\')');
+        code.push('from platiagro import save_dataset');
         code.push('');
-        code.push('models = {\'model\': automl, \'label_encoder\': les}');
-        code.push('model_fname = \'AutoML.joblib\'');
-        code.push('dump(models, model_fname) ');
-        code.push('with open(model_fname, \'rb\') as f:');
-        code.push('    s3.upload_fileobj(f, bucket, os.path.join(experiment_id, model_fname))');
+        code.push('df = pd.DataFrame({"col0": []})');
+        code.push('metadata = {}');
+        code.push('save_dataset(name=dataset, df=df, metadata=metadata)');
+
+        var new_cell_code = this.insert_cell_below('code');
+        new_cell_code.set_text(code.join('\n'))
+        var new_cell_markdown = this.insert_cell_below('markdown');
+        new_cell_markdown.set_text('Save dataset')
+    };
+
+    /**
+     * Create cell with load model code.
+     */
+    Notebook.prototype.load_model = function () {
+        var code = [];
+        code.push('from platiagro import load_model');
+        code.push('');
+        code.push('model = load_model(name=experiment_id)');
+
+        var new_cell_code = this.insert_cell_below('code');
+        new_cell_code.set_text(code.join('\n'))
+        var new_cell_markdown = this.insert_cell_below('markdown');
+        new_cell_markdown.set_text('Load model')
+    };
+
+    /**
+     * Create cell with save model code.
+     */
+    Notebook.prototype.save_model = function () {
+        var code = [];
+        code.push('from platiagro import save_model');
+        code.push('');
+        code.push('save_model(name=experiment_id, model=model)');
 
         var new_cell_code = this.insert_cell_below('code');
         new_cell_code.set_text(code.join('\n'))
         var new_cell_markdown = this.insert_cell_below('markdown');
         new_cell_markdown.set_text('Save model')
-    };
-
-    /**
-     * Create cell with minio upload csv and txt code.
-     */
-    Notebook.prototype.minio_upload_csv_txt = function () {
-        var code = [];
-        code.push('import boto3');
-        code.push('from botocore.client import Config');
-        code.push('s3 = boto3.client(\'s3\',');
-        code.push('                 endpoint_url=\'http://minio-service.kubeflow:9000\',');
-        code.push('                  aws_access_key_id=\'minio\',');
-        code.push('                  aws_secret_access_key=\'minio123\',');
-        code.push('                  config=Config(signature_version=\'s3v4\'),');
-        code.push('                  region_name=\'us-east-1\')');
-        code.push('');
-        code.push('with open(out_csv, \'rb\') as f:');
-        code.push('    s3.upload_fileobj(f, bucket, os.path.join(experiment_id, out_csv))');
-        code.push('');    
-        code.push('with open(out_txt, \'rb\') as f:');
-        code.push('    s3.upload_fileobj(f, bucket, os.path.join(experiment_id, out_txt))');
-
-        var new_cell_code = this.insert_cell_below('code');
-        new_cell_code.set_text(code.join('\n'))
-        var new_cell_markdown = this.insert_cell_below('markdown');
-        new_cell_markdown.set_text('Upload CSV and TXT')
     };
 
     return {Notebook: Notebook};
