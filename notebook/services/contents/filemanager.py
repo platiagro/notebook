@@ -495,7 +495,7 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
 
         # Save the file on Minio if the file is a PlatIA component 
         if path.startswith("components"):
-            minioHost = os.getenv('MINIO_HOST', 'minio-service:9000')
+            minioHost = os.getenv('MINIO_HOST', 'minio-service.kubeflow:9000')
             minioAccessKey = os.getenv('MINIO_ACCESS_KEY', 'minio')
             minioSecretKey = os.getenv('MINIO_SECRET_KEY', 'minio123')
             minioBucket = os.getenv('MINIO_BUCKET', 'mlpipeline')
