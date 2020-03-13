@@ -498,9 +498,12 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
             minioHost = os.getenv('MINIO_HOST', 'minio-service.kubeflow:9000')
             minioAccessKey = os.getenv('MINIO_ACCESS_KEY', 'minio')
             minioSecretKey = os.getenv('MINIO_SECRET_KEY', 'minio123')
-            minioBucket = os.getenv('MINIO_BUCKET', 'mlpipeline')
+            minioBucket = os.getenv('MINIO_BUCKET', 'anonymous')
             minioClient = Minio(minioHost, access_key=minioAccessKey, secret_key=minioSecretKey, secure=False)
             try:
+                bucketExists = minioClient.bucket_exists(minioBucket)
+                if not bucketExists:
+                    minioClient.make_bucket(minioBucket, location="us-east-1")
                 minioClient.fput_object(minioBucket, path, os_path)
             except Exception as e:
                 self.log.error(u'Error while saving file on Minio: %s', e)
