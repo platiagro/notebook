@@ -111,7 +111,8 @@ for more information.
         'ipykernel', # bless IPython kernel for now
         'Send2Trash',
         'terminado>=0.8.1',
-        'prometheus_client'
+        'prometheus_client',
+        'requests>=2.23.0'
     ],
     extras_require = {
         'test': ['nose', 'coverage', 'requests', 'nose_warnings_filters',
