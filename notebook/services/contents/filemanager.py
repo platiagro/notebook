@@ -14,13 +14,15 @@ import warnings
 import mimetypes
 import nbformat
 
-from send2trash import send2trash
-from tornado import web
-
 from .filecheckpoints import FileCheckpoints
 from .fileio import FileManagerMixin
 from .manager import ContentsManager
+from .platia import save_component_on_minio
 from ...utils import exists
+
+from send2trash import send2trash
+from tornado import web
+from os.path import samefile
 
 from ipython_genutils.importstring import import_item
 from traitlets import Any, Unicode, Bool, TraitError, observe, default, validate
@@ -33,9 +35,6 @@ from notebook.utils import (
 )
 from notebook.base.handlers import AuthenticatedFileHandler
 from notebook.transutils import _
-
-from os.path import samefile
-from minio import Minio
 
 _script_exporter = None
 
@@ -495,18 +494,7 @@ class FileContentsManager(FileManagerMixin, ContentsManager):
 
         # Save the file on Minio if the file is a PlatIA component 
         if path.startswith("components"):
-            minioHost = os.getenv('MINIO_HOST', 'minio-service.kubeflow:9000')
-            minioAccessKey = os.getenv('MINIO_ACCESS_KEY', 'minio')
-            minioSecretKey = os.getenv('MINIO_SECRET_KEY', 'minio123')
-            minioBucket = os.getenv('MINIO_BUCKET', 'anonymous')
-            minioClient = Minio(minioHost, access_key=minioAccessKey, secret_key=minioSecretKey, secure=False)
-            try:
-                bucketExists = minioClient.bucket_exists(minioBucket)
-                if not bucketExists:
-                    minioClient.make_bucket(minioBucket, location="us-east-1")
-                minioClient.fput_object(minioBucket, path, os_path)
-            except Exception as e:
-                self.log.error(u'Error while saving file on Minio: %s', e)
+            save_component_on_minio(self, path=path, os_path=os_path)
 
         return model
 

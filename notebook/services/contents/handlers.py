@@ -17,6 +17,7 @@ from notebook.base.handlers import (
     IPythonHandler, APIHandler, path_regex,
 )
 
+from .platia import upload_dataset
 
 def validate_model(model, expect_content):
     """
@@ -311,6 +312,35 @@ class TrustNotebooksHandler(IPythonHandler):
         yield maybe_future(cm.trust_notebook(path))
         self.set_status(201)
         self.finish()
+
+class PlatIaHandler(IPythonHandler):
+    """ Handles to PlaIa components """
+
+    @web.authenticated
+    @gen.coroutine
+    def get(self,path=''):
+        self.set_status(200)
+        self.write('pong')
+        self.finish()
+    
+    @web.authenticated
+    @gen.coroutine
+    def post(self, path=''):
+        if 'file' in self.request.files: 
+            file = self.request.files['file'][0]
+            response = upload_dataset(self, file=file['body'])
+            if response is not None:
+                self.set_status(200)
+                self.set_header('Content-Type', 'application/json')
+                data = json.dumps(response, default=date_default)
+                self.finish(data)
+            else:
+                self.set_status(500)
+                self.finish(u'Unable to upload file')
+        else:
+            self.set_status(400)
+            self.finish(u'No file in request')
+    
 #-----------------------------------------------------------------------------
 # URL to handler mappings
 #-----------------------------------------------------------------------------
@@ -325,4 +355,5 @@ default_handlers = [
     (r"/api/contents%s/trust" % path_regex, TrustNotebooksHandler),
     (r"/api/contents%s" % path_regex, ContentsHandler),
     (r"/api/notebooks/?(.*)", NotebooksRedirectHandler),
+    (r"/api/platia", PlatIaHandler),
 ]
